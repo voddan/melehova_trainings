@@ -1,6 +1,6 @@
 //
-// Created by voddan on 21/02/16.
-// uses C99
+// Created by Daniil Vodopian (376 MIPT) on 21/02/16.
+// Compile C99
 //
 
 #include <stdio.h>
