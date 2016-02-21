@@ -22,6 +22,7 @@ int main(int argn, char ** args) {
            "|     * numbers divisible by 15 are replaced by \"bissbuzz;\"\n"
            "|     * numbers divisible by  5 are replaced by \"buss\",\n"
            "| Ignores the minus sign;\n"
+           "| A number may not be surrounded by anything but `\\t`, ` `, `\\n`;\n"
            "| The numbers must be shorter then %d digits each.\n"
            "\n"
            "Created by Daniil Vodopian (voddan) on 21/02/16\n"
@@ -46,10 +47,16 @@ int main(int argn, char ** args) {
 bool is_mod_5(int);
 bool is_mod_3(int);
 
+bool is_digit(int);
+bool is_space(int);
+
+void print_char_arr(char *, int);
+
 void bizz_buss(FILE * file) {
     char num[MAX_NUMBER_LENGTH] = {};
 
-    bool is_number = false;
+    bool was_number = false;
+    bool was_space = true;
 
     int digit_sum = 0;
     int digit_last = -1;
@@ -59,10 +66,11 @@ void bizz_buss(FILE * file) {
     int ch;
     while (EOF != (ch = getc(file))) {
 
-        if ('0' <= ch && ch <= '9') {
+        if (is_digit(ch) && (was_space || was_number)) {
+
             int digit = ch - '0';
 
-            is_number = true;
+            was_number = true;
             digit_sum += digit;
             digit_last = digit;
 
@@ -72,31 +80,38 @@ void bizz_buss(FILE * file) {
             }
             num[digit_count] = (char) ch;
             digit_count += 1;
-        } else if (is_number) {
-            bool mod_3 = is_mod_3(digit_sum);
-            bool mod_5 = is_mod_5(digit_last);
 
+        } else if (was_number) {
+            if (is_space(ch)) {
+                bool mod_3 = is_mod_3(digit_sum);
+                bool mod_5 = is_mod_5(digit_last);
 
-            if (mod_3 && mod_5) {
-                printf("bizzbuzz");
-            } else if (mod_3) {
-                printf("bizz");
-            } else if (mod_5) {
-                printf("buss");
+                if (mod_3 && mod_5) {
+                    printf("bizzbuzz");
+                } else if (mod_3) {
+                    printf("bizz");
+                } else if (mod_5) {
+                    printf("buss");
+                } else {
+                    print_char_arr(num, digit_count);
+                }
+
             } else {
-                for (int i = 0; i < digit_count; i++)
-                    printf("%c", num[i]);
+                print_char_arr(num, digit_count);
             }
 
-            is_number = false;
+            was_number = false;
             digit_sum = 0;
             digit_last = -1;
             digit_count = 0;
 
             printf("%c", ch);
+
         } else {
             printf("%c", ch);
         }
+
+        was_space = is_space(ch);
     }
 }
 
@@ -119,4 +134,18 @@ bool is_mod_3(int sum) {
 
     assert(m == sum % 3);
     return m == 0;
+}
+
+bool is_digit(int ch) {
+    return '0' <= ch && ch <= '9';
+}
+
+bool is_space(int ch) {
+    return ' ' == ch || '\n' == ch || '\t' == ch || EOF == ch;
+}
+
+void print_char_arr(char * arr, int len) {
+    for (int i = 0; i < len; i++) {
+        printf("%c", arr[i]);
+    }
 }
