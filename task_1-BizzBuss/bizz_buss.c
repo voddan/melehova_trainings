@@ -6,30 +6,33 @@
 #include <stdio.h>
 #include <tic.h>
 #include <assert.h>
+#include <stdlib.h>
+
+#define MAX_NUMBER_LENGTH (100)
 
 void bizz_buss(FILE *);
 
-
 int main(int argn, char ** args) {
     printf("    *** BIZZ-BUSS ***\n"
-                   "USAGE: Takes 0 or 1 argument: path to a text file\n"
-                   "\n"
-                   "Reads the input from `stdin` or a file if provided;\n"
-                   "prints it, with replacements:\n"
-                   "    * numbers divisible by  3 are replaced by \"bizz\",\n"
-                   "    * numbers divisible by  5 are replaced by \"buss\",\n"
-                   "    * numbers divisible by 15 are replaced by \"bissbuzz;\"\n"
-                   "ignores the minus sign\n"
-                   "\n"
-                   "Created by Daniil Vodopian (voddan) on 21/02/16\n"
-                   "-----------------------------------------------\n");
+           "USAGE: bizz_buss [path to a text file]\n"
+           "\n"
+           "| Reads the input from `stdin` or a file if provided;\n"
+           "| Prints it, with replacements:\n"
+           "|     * numbers divisible by  3 are replaced by \"bizz\",\n"
+           "|     * numbers divisible by 15 are replaced by \"bissbuzz;\"\n"
+           "|     * numbers divisible by  5 are replaced by \"buss\",\n"
+           "| Ignores the minus sign;\n"
+           "| The numbers must be shorter then %d digits each.\n"
+           "\n"
+           "Created by Daniil Vodopian (voddan) on 21/02/16\n"
+           "-----------------------------------------------\n", MAX_NUMBER_LENGTH);
 
 
     FILE * input = (argn > 1) ? fopen(args[1], "ro") : stdin;
 
     if (!input) {
-        printf("ERROR: file not found: %s", args[1]);
-        return 1;
+        fprintf(stderr, "ERROR: file not found: %s", args[1]);
+        exit(1);
     }
 
 
@@ -39,19 +42,18 @@ int main(int argn, char ** args) {
     return 0;
 }
 
-//char by char
-//input source
 
 bool is_mod_5(int);
-
 bool is_mod_3(int);
 
 void bizz_buss(FILE * file) {
+    char num[MAX_NUMBER_LENGTH] = {};
+
     bool is_number = false;
 
     int digit_sum = 0;
     int digit_last = -1;
-    int num = 0;  //todo
+    int digit_count = 0;
 
 
     int ch;
@@ -63,7 +65,13 @@ void bizz_buss(FILE * file) {
             is_number = true;
             digit_sum += digit;
             digit_last = digit;
-            num = 10 * num + digit;
+
+            if (digit_count >= MAX_NUMBER_LENGTH) {
+                fprintf(stderr, "ERROR: a number has more than %d digits", MAX_NUMBER_LENGTH);
+                exit(2);
+            }
+            num[digit_count] = (char) ch;
+            digit_count += 1;
         } else if (is_number) {
             bool mod_3 = is_mod_3(digit_sum);
             bool mod_5 = is_mod_5(digit_last);
@@ -76,13 +84,14 @@ void bizz_buss(FILE * file) {
             } else if (mod_5) {
                 printf("buss");
             } else {
-                printf("%d", num);
+                for (int i = 0; i < digit_count; i++)
+                    printf("%c", num[i]);
             }
 
             is_number = false;
             digit_sum = 0;
             digit_last = -1;
-            num = 0;
+            digit_count = 0;
 
             printf("%c", ch);
         } else {
@@ -96,7 +105,7 @@ bool is_mod_5(int last) {
 }
 
 bool is_mod_3(int sum) {
-    int power3[] = {729, 243, 81, 27, 9, 3};
+    int power3[] = {729, 243, 81, 27, 9, 3};  // if MAX_NUMBER_LENGTH ~ 100, then sum < 900
 
     int m = sum;
 
