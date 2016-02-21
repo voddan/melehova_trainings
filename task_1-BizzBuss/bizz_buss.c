@@ -4,19 +4,32 @@
 //
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <tic.h>
 #include <assert.h>
 
 void bizz_buss(FILE *);
 
-int main(int argn, char ** args) {
-    char filename[] = "/Users/voddan/Programming/melehova_trainings/task_1-BizzBuss/input.txt";
 
-    FILE * input = fopen(filename, "ro");
+int main(int argn, char ** args) {
+    printf("    *** BIZZ-BUSS ***\n"
+                   "USAGE: Takes 0 or 1 argument: path to a text file\n"
+                   "\n"
+                   "Reads the input from `stdin` or a file if provided;\n"
+                   "prints it, with replacements:\n"
+                   "    * numbers divisible by  3 are replaced by \"bizz\",\n"
+                   "    * numbers divisible by  5 are replaced by \"buss\",\n"
+                   "    * numbers divisible by 15 are replaced by \"bissbuzz;\"\n"
+                   "ignores the minus sign\n"
+                   "\n"
+                   "Created by Daniil Vodopian (voddan) on 21/02/16\n"
+                   "-----------------------------------------------\n");
+
+
+    FILE * input = (argn > 1) ? fopen(args[1], "ro") : stdin;
+
     if (!input) {
-        printf("ERROR: file not found: %s", filename);
-        exit(1);
+        printf("ERROR: file not found: %s", args[1]);
+        return 1;
     }
 
 
