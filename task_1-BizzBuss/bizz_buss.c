@@ -8,6 +8,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #define MAX_NUMBER_LENGTH (100)
 
@@ -58,9 +59,6 @@ void print_usage() {
 bool is_mod_5(int);
 bool is_mod_3(int);
 
-bool is_digit(int);
-bool is_space(int);
-
 void print_char_arr(char *, int);
 
 void bizz_buss(FILE * file) {
@@ -78,7 +76,7 @@ void bizz_buss(FILE * file) {
     int ch;
     while (EOF != (ch = getc(file))) {
 
-        if (is_digit(ch) && (was_space || was_number)) {
+        if (isdigit(ch) && (was_space || was_number)) {
 
             int digit = ch - '0';
 
@@ -94,7 +92,7 @@ void bizz_buss(FILE * file) {
             digit_count += 1;
 
         } else if (was_number) {
-            if (is_space(ch)) {
+            if (isspace(ch) || EOF == ch) {
                 bool mod_3 = is_mod_3(digit_sum);
                 bool mod_5 = is_mod_5(digit_last);
 
@@ -123,7 +121,7 @@ void bizz_buss(FILE * file) {
             printf("%c", ch);
         }
 
-        was_space = is_space(ch);
+        was_space = isspace(ch);
     }
 }
 
@@ -146,14 +144,6 @@ bool is_mod_3(int sum) {
 
     assert(m == sum % 3);
     return m == 0;
-}
-
-bool is_digit(int ch) {
-    return '0' <= ch && ch <= '9';
-}
-
-bool is_space(int ch) {
-    return ' ' == ch || '\n' == ch || '\t' == ch || EOF == ch;
 }
 
 void print_char_arr(char * arr, int len) {
