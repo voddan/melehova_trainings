@@ -11,8 +11,26 @@
 #define MAX_NUMBER_LENGTH (100)
 
 void bizz_buss(FILE *);
+void print_usage();
 
 int main(int argn, char ** args) {
+    print_usage();
+
+    FILE * input = (argn > 1) ? fopen(args[1], "ro") : stdin;
+
+    if (!input) {
+        fprintf(stderr, "ERROR: file not found: %s", args[1]);
+        exit(1);
+    }
+
+
+    bizz_buss(input);
+
+    fclose(input);
+    return 0;
+}
+
+void print_usage() {
     printf("    *** BIZZ-BUSS ***\n"
            "USAGE: bizz_buss [path to a text file]\n"
            "\n"
@@ -27,20 +45,6 @@ int main(int argn, char ** args) {
            "\n"
            "Created by Daniil Vodopian (voddan) on 21/02/16\n"
            "-----------------------------------------------\n", MAX_NUMBER_LENGTH);
-
-
-    FILE * input = (argn > 1) ? fopen(args[1], "ro") : stdin;
-
-    if (!input) {
-        fprintf(stderr, "ERROR: file not found: %s", args[1]);
-        exit(1);
-    }
-
-
-    bizz_buss(input);
-
-    fclose(input);
-    return 0;
 }
 
 
