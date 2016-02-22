@@ -11,20 +11,25 @@
 
 #define MAX_NUMBER_LENGTH (100)
 
+enum ERROR_CODES {
+    ERR_FILE_NOT_FOUND = 0,
+    ERR_NUM_TOO_BIG = 1
+};
+
 void bizz_buss(FILE *);
 void print_usage();
 
 int main(int argn, char ** args) {
     if (argn > 1 && 0 == strcmp(args[1], "--help")) {
         print_usage();
-        exit(0);
+        return 0;
     }
 
     FILE * input = (argn > 1) ? fopen(args[1], "ro") : stdin;
 
     if (!input) {
         fprintf(stderr, "ERROR: file not found: %s", args[1]);
-        exit(1);
+        exit(ERR_FILE_NOT_FOUND);
     }
 
     bizz_buss(input);
@@ -61,6 +66,7 @@ void print_char_arr(char *, int);
 void bizz_buss(FILE * file) {
     char num[MAX_NUMBER_LENGTH] = {};
 
+
     bool was_number = false;
     bool was_space = true;
 
@@ -82,7 +88,7 @@ void bizz_buss(FILE * file) {
 
             if (digit_count >= MAX_NUMBER_LENGTH) {
                 fprintf(stderr, "ERROR: a number has more than %d digits", MAX_NUMBER_LENGTH);
-                exit(2);
+                exit(ERR_NUM_TOO_BIG);
             }
             num[digit_count] = (char) ch;
             digit_count += 1;
