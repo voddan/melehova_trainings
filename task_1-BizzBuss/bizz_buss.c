@@ -7,6 +7,7 @@
 #include <tic.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define MAX_NUMBER_LENGTH (100)
 
@@ -14,7 +15,10 @@ void bizz_buss(FILE *);
 void print_usage();
 
 int main(int argn, char ** args) {
-    print_usage();
+    if (argn > 1 && 0 == strcmp(args[1], "--help")) {
+        print_usage();
+        exit(0);
+    }
 
     FILE * input = (argn > 1) ? fopen(args[1], "ro") : stdin;
 
@@ -22,7 +26,6 @@ int main(int argn, char ** args) {
         fprintf(stderr, "ERROR: file not found: %s", args[1]);
         exit(1);
     }
-
 
     bizz_buss(input);
 
@@ -32,7 +35,7 @@ int main(int argn, char ** args) {
 
 void print_usage() {
     printf("    *** BIZZ-BUSS ***\n"
-           "USAGE: bizz_buss [path to a text file]\n"
+           "USAGE: bizz_buss [--help] [path to a text file]\n"
            "\n"
            "| Reads the input from `stdin` or a file if provided;\n"
            "| Prints it, with replacements:\n"
@@ -43,8 +46,7 @@ void print_usage() {
            "| A number may not be surrounded by anything but `\\t`, ` `, `\\n`;\n"
            "| The numbers must be shorter then %d digits each.\n"
            "\n"
-           "Created by Daniil Vodopian (voddan) on 21/02/16\n"
-           "-----------------------------------------------\n", MAX_NUMBER_LENGTH);
+           "Created by Daniil Vodopian (voddan) on 21/02/16\n", MAX_NUMBER_LENGTH);
 }
 
 
