@@ -97,7 +97,7 @@ void bizz_buss(FILE * file) {
                 bool mod_5 = is_mod_5(digit_last);
 
                 if (mod_3 && mod_5) {
-                    printf("bizzbuzz");
+                    printf("bizzbuss");
                 } else if (mod_3) {
                     printf("bizz");
                 } else if (mod_5) {
