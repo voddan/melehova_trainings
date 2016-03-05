@@ -12,6 +12,8 @@
 
 #include "helper.h"
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
 enum PAGE_COLOR {
     /*fixed: initial enum value*/
     PG_COLOR_GREEN, /* page may be released without high overhead */
@@ -80,7 +82,9 @@ void PageRemove(PageDesc * pdp);
 
 PageDesc * PageReclaim(UINT cnt) {
     UINT color = 0;
-    PageDesc * Pg;
+    /*fixed: init Pg*/
+    PageDesc * Pg = PageStrg[color];
+    /*todo: use for-loop*/
     while (cnt) {
         Pg = Pg->next;
         PageRemove(PageStrg[color]);
@@ -90,11 +94,14 @@ PageDesc * PageReclaim(UINT cnt) {
             Pg = PageStrg[color];
         }
     }
+    /*fixed: added return statement*/
+    return Pg;
 }
 
 PageDesc * PageInit(void * ptr, UINT color) {
     PageDesc * pg = new PageDesc;
     /*fixed: semicolon after if*/
+    /*todo: delete if - new operator ALWAYS returns an object (or throws an exception)*/
     if (pg)
         /*fixed: replaced & with **/
     PAGE_INIT(*pg, ptr, color)
@@ -110,17 +117,21 @@ PageDesc * PageInit(void * ptr, UINT color) {
 void PageDump() {
     UINT color = 0;
 #define PG_COLOR_NAME(clr) #clr
+    /*todo: autocasting ("" -> (char*)) is deprecated*/
     char * PgColorName[] =
     {
-    PG_COLOR_NAME(PG_COLOR_RED),
-    PG_COLOR_NAME(PG_COLOR_YELLOW),
-    PG_COLOR_NAME(PG_COLOR_GREEN)
+    (char *) PG_COLOR_NAME(PG_COLOR_RED),
+    (char *) PG_COLOR_NAME(PG_COLOR_YELLOW),
+    (char *) PG_COLOR_NAME(PG_COLOR_GREEN)
     };
 
     while (color <= PG_COLOR_RED) {
-        printf("PgStrg[(%s) %u] ********** \n", color, PgColorName[color]);
-        for (PageDesc * Pg = PageStrg[++color]; Pg != NULL; Pg = Pg->next) {
-            if (Pg->uAddr = NULL)
+        /*fixed: swapped the printf args*/
+        printf("PgStrg[(%s) %u] ********** \n", PgColorName[color], color);
+        /*fixed: replaced ++color with color++ */
+        for (PageDesc * Pg = PageStrg[color++]; Pg != NULL; Pg = Pg->next) {
+            /*fixed: replaced = with == in condition */
+            if (Pg->uAddr == NULL)
                 continue;
 
             printf("Pg :Key = 0x%x, addr %p\n", Pg->uKey, Pg->uAddr);
@@ -128,3 +139,5 @@ void PageDump() {
     }
 #undef PG_COLOR_NAME
 }
+
+#pragma clang diagnostic pop
