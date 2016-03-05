@@ -7,8 +7,10 @@
 *		AnnaM
 */
 
-#include <Windows.h>
+#include "Windows.h"
 #include <stdio.h>
+
+#include "helper.h"
 
 enum PAGE_COLOR {
     PG_COLOR_GREEN = 1, /* page may be released without high overhead */
