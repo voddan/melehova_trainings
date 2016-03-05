@@ -13,7 +13,8 @@
 #include "helper.h"
 
 enum PAGE_COLOR {
-    PG_COLOR_GREEN = 1, /* page may be released without high overhead */
+    /*fixed: initial enum value*/
+    PG_COLOR_GREEN, /* page may be released without high overhead */
     PG_COLOR_YELLOW, /* nice to have */
     PG_COLOR_RED    /* page is actively used */
 };
@@ -33,7 +34,8 @@ union PageKey {
 
 
 /* Prepare from 2 chars the key of the same configuration as in PageKey */
-#define CALC_PAGE_KEY(Addr, Color)    (  (Color) + (Addr) << 8 )
+/*fixed: braces around <<*/
+#define CALC_PAGE_KEY(Addr, Color)    (  (Color) + ((UINT) Addr << 8) )
 
 
 /**
@@ -44,11 +46,14 @@ struct PageDesc {
 
     /* list support */
     PageDesc * next, * prev;
+
+    /*fixed: missing pointer*/
+    void * uAddr;
 };
 
 #define PAGE_INIT(Desc, Addr, Color)              \
     {                                               \
-        (Desc).uKey = CALC_PAGE_KEY( Addr, Color ); \
+        (Desc).uKey.uKey = CALC_PAGE_KEY( Addr, Color ); \
         (Desc).next = (Desc).prev = NULL;           \
     }
 
@@ -57,15 +62,21 @@ struct PageDesc {
 static PageDesc * PageStrg[3];
 
 void PageStrgInit() {
-    memset(PageStrg, 0, sizeof(&PageStrg));
+    /*fixed: pointer to an array*/
+    memset(PageStrg, 0, sizeof(PageStrg));
 }
 
 PageDesc * PageFind(void * ptr, char color) {
-    for (PageDesc * Pg = PageStrg[color]; Pg; Pg = Pg->next);
-    if (Pg->uKey == CALC_PAGE_KEY(ptr, color))
-        return Pg;
+    /*fixed: semicolon after for*/
+    for (PageDesc * Pg = PageStrg[color]; Pg; Pg = Pg->next)
+        /*fixed: added uKey.uKey*/
+        if (Pg->uKey.uKey == CALC_PAGE_KEY(ptr, color))
+            return Pg;
     return NULL;
 }
+
+/*fixed: added PageRemove declaration*/
+void PageRemove(PageDesc * pdp);
 
 PageDesc * PageReclaim(UINT cnt) {
     UINT color = 0;
@@ -83,9 +94,13 @@ PageDesc * PageReclaim(UINT cnt) {
 
 PageDesc * PageInit(void * ptr, UINT color) {
     PageDesc * pg = new PageDesc;
-    if (pg) PAGE_INIT(&pg, ptr, color);
+    /*fixed: semicolon after if*/
+    if (pg)
+        /*fixed: replaced & with **/
+    PAGE_INIT(*pg, ptr, color)
     else
-    printf("Allocation has failed\n");
+        printf("Allocation has failed\n");
+
     return pg;
 }
 
