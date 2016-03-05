@@ -84,7 +84,6 @@ PageDesc * PageReclaim(UINT cnt) {
     UINT color = 0;
     /*fixed: init Pg*/
     PageDesc * Pg = PageStrg[color];
-    /*todo: use for-loop*/
     while (cnt) {
         Pg = Pg->next;
         PageRemove(PageStrg[color]);
