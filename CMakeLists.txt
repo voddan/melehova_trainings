@@ -25,5 +25,8 @@ add_executable(task_2-BadHashTable-test-BFM task_2-BadHashTable/HASH/test_bfm.c
 add_executable(task_2-BadHashTable-test-hashes task_2-BadHashTable/HASH/test_hashes.c
         task_2-BadHashTable/HASH/hashfunction.c
         task_2-BadHashTable/HASH/hashfunction_bfm.c
-        task_2-BadHashTable/BFM/brain_fuck_machine.c
-        )
+        task_2-BadHashTable/BFM/brain_fuck_machine.c)
+
+#-------------------
+
+add_executable(task_3-FixBugs task_3-FixBugs/fix_bugs.cpp)
