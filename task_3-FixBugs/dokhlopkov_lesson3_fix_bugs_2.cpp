@@ -12,6 +12,7 @@
 // 1bug
 //#include <Windows.h>
 #include <stdio.h>
+#include <string.h>
 
 enum PAGE_COLOR {
     PG_COLOR_GREEN, /* page may be released without high overhead */
@@ -35,7 +36,8 @@ union PageKey {
 
 
 /* Prepare from 2 chars the key of the same configuration as in PageKey */
-#define CALC_PAGE_KEY(Addr, Color)    (  (Color) + ((Addr) << 8)))
+/*fixed: one extra `)`*/
+#define CALC_PAGE_KEY(Addr, Color)    (  (Color) + ((Addr) << 8))
 
 
 /**
@@ -50,12 +52,14 @@ struct PageDesc {
 
 #define PAGE_INIT(Desc, Addr, Color)              \
     do{                                               \
-        (Desc).uKey = CALC_PAGE_KEY( Addr, Color ); \
+        /*fixed: added cast (see line 79)*/         \
+        (Desc).uKey = CALC_PAGE_KEY((UINT) Addr, Color ); \
         (Desc).next = (Desc).prev = NULL;           \
     }while(0)
 
 
 /* storage for pages of all colors */
+/*todo: should be PG_TOTAL_COLORS instead of `3` (see line 71)*/
 static PageDesc * PageStrg[3];
 
 void PageStrgInit() {
@@ -67,7 +71,8 @@ PageDesc * PageFind(void * ptr, unsigned char color) {
         return NULL;
     for (PageDesc * Pg = PageStrg[color]; Pg; Pg = Pg->next)
         if (Pg->uKey == CALC_PAGE_KEY((UINT) ptr, color))
-    return Pg;
+            return Pg;
+
     return NULL;
 }
 
@@ -83,7 +88,8 @@ PageDesc * PageReclaim(UINT cnt) {
         PageRemove(PageStrg[color]);
         cnt--;
     }
-    return Pg
+    /*fixed: semicolon*/
+    return Pg;
 }
 
 PageDesc * PageInit(void * ptr, UINT color) {
@@ -95,7 +101,8 @@ PageDesc * PageInit(void * ptr, UINT color) {
             printf("Allocation has failed\n");
         return pg;
     }
-    catch (bad_alloc) {
+        /*fixed: std import or specification std:: */
+    catch (std::bad_alloc) {
         printf("Bad allocation\n");
         return NULL;
     }
@@ -118,6 +125,7 @@ void PageDump() {
     while (color <= PG_COLOR_RED) {
         printf("PgStrg[(%s) %u] ********** \n", PgColorName[color], color);
         for (PageDesc * Pg = PageStrg[color++]; Pg != NULL; Pg = Pg->next) {
+            /*didn't fixed: Pg->uAddr cannot be resolved */
             if (Pg->uAddr == NULL)
                 continue;
 
