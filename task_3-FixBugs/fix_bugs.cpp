@@ -7,10 +7,12 @@
 *		AnnaM
 */
 
-#include "Windows.h"
+//#include "Windows.h" /*todo: was used for memset from string.h */
 #include <stdio.h>
+#include <string.h>
 
-#include "helper.h"
+#define UINT unsigned int
+#define CHAR char
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
