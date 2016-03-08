@@ -32,3 +32,5 @@ add_executable(task_2-BadHashTable-test-hashes task_2-BadHashTable/HASH/test_has
 add_executable(task_3-FixBugs task_3-FixBugs/fix_bugs.cpp)
 
 add_executable(task_3-dokhlopkov task_3-FixBugs/dokhlopkov_lesson3_fix_bugs_2.cpp)
+
+add_executable(task_3-checked task_3-FixBugs/dokhlopkov_checked_dvodopian_fix_bugs.cpp)
