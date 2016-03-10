@@ -38,3 +38,5 @@ add_executable(task_3-checked task_3-FixBugs/dokhlopkov_checked_dvodopian_fix_bu
 #-------------------
 
 add_executable(task_3-measure-getc-1 task_3-measure-getc/test_1.c)
+add_executable(task_3-measure-getc-5 task_3-measure-getc/test_5.c)
+add_executable(task_3-measure-getc-30 task_3-measure-getc/test_30.c)
