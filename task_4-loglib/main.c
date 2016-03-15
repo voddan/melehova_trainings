@@ -9,9 +9,8 @@ int main(int argn, char ** args) {
     printf("hello world\n");
 
 
-    log_init();
+    log_init(256, DEBUG);
 
-    log_set_level(DEBUG);
 
     log_write(DEBUG, "hello world!");
 
