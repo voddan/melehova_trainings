@@ -13,7 +13,7 @@ typedef enum {
     size
 } LogLevel;
 
-const LogLevel DEFAULT_LOG_LEVEL = INFO;
+#define DEFAULT_LOG_LEVEL (LogLevel.INFO)
 
 void log_init();
 

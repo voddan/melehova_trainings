@@ -8,6 +8,7 @@
 int main(int argn, char ** args) {
     printf("hello world\n");
 
+
     log_init();
 
     log_set_level(DEBUG);
