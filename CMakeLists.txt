@@ -46,4 +46,4 @@ add_executable(task_3-measure-getc-n task_3-measure-getc/test_n.c)
 
 #-------------------
 
-add_executable(task_4-loglib-main task_4-loglib/main.c)
+add_executable(task_4-loglib-main task_4-loglib/main.c task_4-loglib/loglib.c task_4-loglib/loglib.h)
