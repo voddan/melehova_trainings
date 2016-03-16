@@ -33,13 +33,13 @@ void log_set_level(LogLevel level);
 
 #define flogger(path, level) log_init(fopen(path, "w+"), DEFAULT_BUF_SIZE, level)
 
-#define logerr(level) log_init(stderr, DEFAULT_BUF_SIZE, level)
-#define logout(level) log_init(stdout, DEFAULT_BUF_SIZE, level)
+#define logERR(level) log_init(stderr, DEFAULT_BUF_SIZE, level)
+#define logOUT(level) log_init(stdout, DEFAULT_BUF_SIZE, level)
 
-#define debug(msg) log_write(DEBUG, msg)
-#define info(msg) log_write( INFO, msg)
-#define warn(msg) log_write( WARN, msg)
-#define error(msg) log_write(ERROR, msg)
+#define debug(msg)   log_write(LOG_DEBUG, msg)
+#define info(msg)    log_write( LOG_INFO, msg)
+#define warning(msg) log_write( LOG_WARN, msg)
+#define error(msg)   log_write(LOG_ERROR, msg)
 
 #endif //MELEHOVA_TRAININGS_LOGLIB_H
 
