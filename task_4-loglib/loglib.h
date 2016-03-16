@@ -13,7 +13,7 @@ typedef enum {
     INFO,
     WARN,
     ERROR,
-    _max_log_level
+    _print_log_level
 } LogLevel;
 
 #define DEFAULT_LOG_LEVEL (LogLevel.INFO)

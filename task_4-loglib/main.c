@@ -15,7 +15,7 @@ int main(int argn, char ** args) {
     printf("hello world\n");
 
 
-    log_init(stderr, 25, DEBUG);
+    log_init(stderr, 256, DEBUG);
 
 
     log_write(DEBUG, "hello world!");

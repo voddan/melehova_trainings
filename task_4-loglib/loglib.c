@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <execinfo.h>
+#include <time.h>
 #include "loglib.h"
 
 typedef struct {
@@ -28,7 +29,7 @@ typedef struct {
 Logger * _Logger_singleton_set(bool set_logger_instance, Logger * logger_instance) {
     static Logger * instance = NULL;
 
-// todo: multythread!
+// todo: multi-thread!
     if (set_logger_instance) {
         instance = logger_instance;
     }
@@ -70,12 +71,15 @@ void Logger_destruct() {
 void log_init(FILE * stream, size_t size, LogLevel level) {
     if (Logger_singleton()) {
         fprintf(stderr, "FATAL> logger already exists\n");
-        log_write(_max_log_level, "FATAL:: logger already exists");
+        log_write(_print_log_level, "FATAL:: logger already exists\n");
         exit(EXIT_FAILURE);
     }
 
     Logger_new(size, level, stream);
     atexit(Logger_destruct);
+
+    time_t tm = time(NULL);
+    log_write(_print_log_level, ctime(&tm));
 }
 
 /** fast function, no memory allocations */
@@ -86,53 +90,57 @@ void log_write(LogLevel level, char const * msg) {
         exit(EXIT_FAILURE);
     }
 
-    if (log->level > level)
+    if (log->level > level)  // filtering by the log level
         return;
 
-    char * middle = log->buf + log->buf_size / 2;
-
-    if (log->eob > middle)
+    if (log->eob > log->buf + log->buf_size / 2)
         log_flush();
 
-    size_t size_left = log->buf + log->buf_size - log->eob - 1;
 
     char * prefix;
-
     switch (level) {
         case DEBUG:
-            prefix = "DEBUG :: ";
+            prefix = "DEBUG";
             break;
         case INFO:
-            prefix = "INFO  :: ";
+            prefix = "INFO ";
             break;
         case WARN:
-            prefix = "WARN  :: ";
+            prefix = "WARN ";
             break;
         case ERROR:
-            prefix = "ERROR :: ";
+            prefix = "ERROR";
             break;
         default:
             prefix = "";
     }
 
+    time_t tm = time(NULL);
+    char timestamp[30] = {};
+    strftime(timestamp, sizeof(timestamp), "%T", localtime(&tm));
 
-// todo: it is not thread safe to write first and increment log->eob second
+    size_t size_left = log->buf + log->buf_size - log->eob - 1;
+
+    // todo: it is not thread safe to write first and increment log->eob second
+    if (_print_log_level == level) {
+        log->eob += snprintf(log->eob, size_left, "%s", msg);
+    } else {
+        log->eob += snprintf(log->eob, size_left, "%s [%s] :: %s\n", prefix, timestamp, msg);
+    }
+
     if (ERROR == level) {
-        log->eob += snprintf(log->eob, size_left, "%s%s\n", prefix, msg);
         log_flush();
 
         void * callstack[CALLSTACK_MAX_SIZE];
         int callstack_len = backtrace(callstack, CALLSTACK_MAX_SIZE);
 
-        //todo: multi-thread!
-        backtrace_symbols_fd(callstack, callstack_len, fileno(log->stream));
-    } else {
-        log->eob += snprintf(log->eob, size_left, "%s%s\n", prefix, msg);
-
-        //        todo: multithread!
-        if (log->eob > log->buf + log->buf_size)
-            log->eob += sprintf(log->eob, "\n");
+        // todo: multi-thread!
+        backtrace_symbols_fd(callstack + 1, callstack_len - 2, fileno(log->stream));
     }
+
+    //  todo: multithread!
+    if (log->eob > log->buf + log->buf_size)
+        log->eob += sprintf(log->eob, "\n");
 }
 
 void log_flush() {
@@ -155,5 +163,6 @@ void log_set_level(LogLevel level) {
         exit(EXIT_FAILURE);
     }
 
+    // todo: log the new logger level (??)
     log->level = level;
 }
