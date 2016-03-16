@@ -29,7 +29,7 @@ void log_set_level(LogLevel level);
 
 //--------------------
 
-#ifndef RELEASE
+#ifndef RELEASE  //RELEASE
 
 #define logger(level) log_init(fopen("./log.txt", "w+"), DEFAULT_BUF_SIZE, level)
 
@@ -47,7 +47,7 @@ void log_set_level(LogLevel level);
 
 #define loggerLevel(level) log_set_level(level)
 
-#else
+#else  //RELEASE
 #define logger(level)         0
 #define flogger(path, level)  0
 #define logERR(level)         0
@@ -58,8 +58,7 @@ void log_set_level(LogLevel level);
 #define error(msg)            0
 #define loggerFlush()         0
 #define loggerLevel(level)    0
-
-#endif
+#endif  //RELEASE
 
 
 #endif //MELEHOVA_TRAININGS_LOGLIB_H

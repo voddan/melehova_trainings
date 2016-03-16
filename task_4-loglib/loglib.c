@@ -12,6 +12,9 @@
 
 #include "loglib.h"
 
+
+//---- Logger -----------------
+
 typedef struct {
     char * buf;
     size_t buf_size;
@@ -30,7 +33,7 @@ typedef struct {
 Logger * _Logger_singleton_set(bool set_logger_instance, Logger * logger_instance) {
     static Logger * instance = NULL;
 
-// todo: multi-thread!
+    // todo: multi-thread!
     if (set_logger_instance) {
         instance = logger_instance;
     }
@@ -68,9 +71,9 @@ void Logger_destruct() {
     _Logger_singleton_set(true, NULL);
 }
 
-//---- PUBLIC API -----------------
 
-/** the result is always 5 chars + \0 */
+//---- UTILS -----------------
+
 char * log_level2str(LogLevel level) {
     switch (level) {
         case LOG_DEBUG:
@@ -86,6 +89,11 @@ char * log_level2str(LogLevel level) {
     }
 }
 
+
+//---- PUBLIC API -----------------
+
+
+/** the result is always 5 chars + \0 */
 void log_init(FILE * stream, size_t size, LogLevel level) {
     if (Logger_singleton()) {
         fprintf(stderr, "FATAL> logger already exists\n");
