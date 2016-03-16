@@ -9,11 +9,11 @@
 #define MELEHOVA_TRAININGS_LOGLIB_H
 
 typedef enum {
-    DEBUG,
-    INFO,
-    WARN,
-    ERROR,
-    _print_log_level
+    LOG_DEBUG,
+    LOG_INFO,
+    LOG_WARN,
+    LOG_ERROR,
+    _LOG_print_log_level
 } LogLevel;
 
 #define DEFAULT_BUF_SIZE (256)
