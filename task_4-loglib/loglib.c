@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <execinfo.h>
 #include <time.h>
+
 #include "loglib.h"
 
 typedef struct {
@@ -122,7 +123,7 @@ void log_write(LogLevel level, char const * msg) {
 
     size_t size_left = log->buf + log->buf_size - log->eob - 1;
 
-    // todo: it is not thread safe to write first and increment log->eob second
+    // todo: multi-thread! it is not thread safe to write first and increment log->eob second
     if (_print_log_level == level) {
         log->eob += snprintf(log->eob, size_left, "%s", msg);
     } else {
@@ -172,7 +173,6 @@ void log_set_level(LogLevel level) {
         exit(EXIT_FAILURE);
     }
 
-    // todo: log the new logger level (??)
     log->level = level;
 
     char msg[20] = {};

@@ -16,7 +16,6 @@ typedef enum {
     _print_log_level
 } LogLevel;
 
-#define DEFAULT_LOG_LEVEL (LogLevel.INFO)
 #define DEFAULT_BUF_SIZE (256)
 #define CALLSTACK_MAX_SIZE (10)
 
