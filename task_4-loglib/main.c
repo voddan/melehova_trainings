@@ -14,9 +14,9 @@ void somefunc() {
 int main(int argn, char ** args) {
     printf("hello world\n");
 
-
-    log_init(stderr, 256, DEBUG);
-
+//    log_init(stderr, 256, DEBUG);
+//    flogger("log", DEBUG);
+    logger(DEBUG);
 
     log_write(DEBUG, "hello world!");
 
@@ -25,7 +25,7 @@ int main(int argn, char ** args) {
     log_write(INFO, "paparem!");
 
 
-//    somefunc();
+    somefunc();
 
     log_write(DEBUG, "yups");
 
@@ -36,7 +36,7 @@ int main(int argn, char ** args) {
 
     log_write(WARN, "I am after some DEBUG");
 
-    log_flush();
+//    log_flush();
 
     return 0;
 }
