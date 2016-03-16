@@ -3,6 +3,9 @@
 //
 
 #include <stdio.h>
+
+//#define RELEASE
+
 #include "loglib.h"
 
 void somefunc() {
@@ -21,7 +24,7 @@ int main(int argn, char ** args) {
 
     debug("hello world!");
 
-    log_flush();
+    loggerFlush();
 
     info("pam-param!");
 
@@ -31,7 +34,7 @@ int main(int argn, char ** args) {
     debug("yups");
 
 
-    log_set_level(LOG_WARN);
+    loggerLevel(LOG_WARN);
 
     debug("you can't see me!");
 
