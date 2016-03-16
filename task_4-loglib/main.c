@@ -5,21 +5,27 @@
 #include <stdio.h>
 #include "loglib.h"
 
+void somefunc() {
+    log_write(WARN, "hello should not do that!!");
+    log_write(ERROR, "that's a trap!");
+
+}
+
 int main(int argn, char ** args) {
     printf("hello world\n");
 
 
-    log_init(stderr, 256, DEBUG);
+    log_init(stderr, 25, DEBUG);
 
 
     log_write(DEBUG, "hello world!");
 
-    log_flush();
+//    log_flush();
 
     log_write(INFO, "paparem!");
-    log_write(WARN, "hello should not do that!!");
 
-    log_write(ERROR, "that's a trap!");
+
+    somefunc();
 
     log_set_level(WARN);
 
@@ -27,3 +33,4 @@ int main(int argn, char ** args) {
 
     return 0;
 }
+

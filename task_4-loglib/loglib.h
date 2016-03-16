@@ -18,6 +18,7 @@ typedef enum {
 
 #define DEFAULT_LOG_LEVEL (LogLevel.INFO)
 #define DEFAULT_BUF_SIZE (256)
+#define CALLSTACK_MAX_SIZE (10)
 
 void log_init(FILE * stream, size_t size, LogLevel level);
 

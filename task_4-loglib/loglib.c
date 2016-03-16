@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
+#include <execinfo.h>
 #include "loglib.h"
 
 typedef struct {
@@ -77,6 +78,7 @@ void log_init(FILE * stream, size_t size, LogLevel level) {
     atexit(Logger_destruct);
 }
 
+/** fast function, no memory allocations */
 void log_write(LogLevel level, char const * msg) {
     Logger * log = Logger_singleton();
     if (!log) {
@@ -92,8 +94,7 @@ void log_write(LogLevel level, char const * msg) {
     if (log->eob > middle)
         log_flush();
 
-    size_t size_left = log->buf + log->buf_size - log->eob;
-
+    size_t size_left = log->buf + log->buf_size - log->eob - 1;
 
     char * prefix;
 
@@ -114,9 +115,24 @@ void log_write(LogLevel level, char const * msg) {
             prefix = "";
     }
 
-    int ch_count = snprintf(log->eob, size_left, "%s%s\n", prefix, msg);
 
-    log->eob += ch_count;
+// todo: it is not thread safe to write first and increment log->eob second
+    if (ERROR == level) {
+        log->eob += snprintf(log->eob, size_left, "%s%s\n", prefix, msg);
+        log_flush();
+
+        void * callstack[CALLSTACK_MAX_SIZE];
+        int callstack_len = backtrace(callstack, CALLSTACK_MAX_SIZE);
+
+        //todo: multi-thread!
+        backtrace_symbols_fd(callstack, callstack_len, fileno(log->stream));
+    } else {
+        log->eob += snprintf(log->eob, size_left, "%s%s\n", prefix, msg);
+
+        //        todo: multithread!
+        if (log->eob > log->buf + log->buf_size)
+            log->eob += sprintf(log->eob, "\n");
+    }
 }
 
 void log_flush() {
@@ -127,6 +143,7 @@ void log_flush() {
     }
 
     fwrite(log->buf, log->eob - log->buf, 1, log->stream);
+    fflush(log->stream);
 
     log->eob = log->buf;
 }
