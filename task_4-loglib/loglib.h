@@ -13,13 +13,13 @@ typedef enum {
     INFO,
     WARN,
     ERROR,
-    size
+    _max_log_level
 } LogLevel;
 
 #define DEFAULT_LOG_LEVEL (LogLevel.INFO)
 #define DEFAULT_BUF_SIZE (256)
 
-void log_init(size_t size, LogLevel level);
+void log_init(FILE * stream, size_t size, LogLevel level);
 
 void log_write(LogLevel level, char const * msg);
 
