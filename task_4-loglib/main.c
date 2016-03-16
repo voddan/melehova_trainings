@@ -20,16 +20,23 @@ int main(int argn, char ** args) {
 
     log_write(DEBUG, "hello world!");
 
-//    log_flush();
+    log_flush();
 
     log_write(INFO, "paparem!");
 
 
-    somefunc();
+//    somefunc();
+
+    log_write(DEBUG, "yups");
+
 
     log_set_level(WARN);
 
     log_write(DEBUG, "you can't see me!");
+
+    log_write(WARN, "I am after some DEBUG");
+
+    log_flush();
 
     return 0;
 }
